@@ -96,4 +96,4 @@ USER root
 WORKDIR /app
 
 ENTRYPOINT ["/app/entrypoint.sh"]
-CMD ["sh", "-c", "uvicorn openhands.server.listen:app --host 0.0.0.0 --port ${PORT}"]
+CMD ["uvicorn", "openhands.server.listen:app", "--host", "0.0.0.0", "--port", "${PORT}"]
