@@ -44,6 +44,7 @@ ENV OPENHANDS_BUILD_VERSION=$OPENHANDS_BUILD_VERSION
 ENV SANDBOX_USER_ID=0
 ENV FILE_STORE=local
 ENV FILE_STORE_PATH=/.openhands-state
+ENV PORT=3000
 RUN mkdir -p $FILE_STORE_PATH
 RUN mkdir -p $WORKSPACE_BASE
 
@@ -95,4 +96,4 @@ USER root
 WORKDIR /app
 
 ENTRYPOINT ["/app/entrypoint.sh"]
-CMD ["uvicorn", "openhands.server.listen:app", "--host", "0.0.0.0", "--port", "3000"]
+CMD ["sh", "-c", "uvicorn openhands.server.listen:app --host 0.0.0.0 --port ${PORT}"]
