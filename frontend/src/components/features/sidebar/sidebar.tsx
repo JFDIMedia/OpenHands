@@ -23,6 +23,7 @@ import { useConfig } from "#/hooks/query/use-config";
 import { cn } from "#/utils/utils";
 import { displayErrorToast } from "#/utils/custom-toast-handlers";
 import { HIDE_LLM_SETTINGS } from "#/utils/feature-flags";
+import { useAuth } from "#/context/auth-context";
 
 export function Sidebar() {
   const location = useLocation();
@@ -35,8 +36,9 @@ export function Sidebar() {
     isError: settingsIsError,
     isFetching: isFetchingSettings,
   } = useSettings();
-  const { mutateAsync: logout } = useLogout();
+  const { mutateAsync: logoutGitHub } = useLogout();
   const { settings, saveUserSettings } = useCurrentSettings();
+  const { logout, isAuthenticated, username } = useAuth();
 
   const [settingsModalIsOpen, setSettingsModalIsOpen] = React.useState(false);
 
@@ -77,9 +79,24 @@ export function Sidebar() {
   };
 
   const handleLogout = async () => {
-    if (config?.APP_MODE === "saas") await logout();
-    else await saveUserSettings({ unset_github_token: true });
-    posthog.reset();
+    try {
+      // Handle GitHub logout if in SaaS mode
+      if (config?.APP_MODE === "saas") {
+        await logoutGitHub();
+      } else {
+        await saveUserSettings({ unset_github_token: true });
+      }
+      
+      // Always logout from our auth system
+      if (isAuthenticated) {
+        await logout();
+      }
+      
+      posthog.reset();
+    } catch (error) {
+      console.error("Error during logout:", error);
+      displayErrorToast("Failed to logout. Please try again.");
+    }
   };
 
   return (
@@ -122,6 +139,7 @@ export function Sidebar() {
               }
               onLogout={handleLogout}
               isLoading={user.isFetching}
+              username={username}
             />
           </div>
         </nav>
