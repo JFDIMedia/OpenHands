@@ -8,12 +8,14 @@ interface AccountSettingsContextMenuProps {
   onLogout: () => void;
   onClose: () => void;
   isLoggedIn: boolean;
+  username?: string | null;
 }
 
 export function AccountSettingsContextMenu({
   onLogout,
   onClose,
   isLoggedIn,
+  username,
 }: AccountSettingsContextMenuProps) {
   const ref = useClickOutsideElement<HTMLUListElement>(onClose);
   const { t } = useTranslation();
@@ -24,6 +26,11 @@ export function AccountSettingsContextMenu({
       ref={ref}
       className="absolute right-full md:left-full -top-1 z-10"
     >
+      {username && (
+        <ContextMenuListItem isDisabled={true}>
+          {t("Logged in as")}: {username}
+        </ContextMenuListItem>
+      )}
       <ContextMenuListItem onClick={onLogout} isDisabled={!isLoggedIn}>
         {t(I18nKey.ACCOUNT_SETTINGS$LOGOUT)}
       </ContextMenuListItem>

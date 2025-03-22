@@ -6,9 +6,10 @@ interface UserActionsProps {
   onLogout: () => void;
   user?: { avatar_url: string };
   isLoading?: boolean;
+  username?: string | null;
 }
 
-export function UserActions({ onLogout, user, isLoading }: UserActionsProps) {
+export function UserActions({ onLogout, user, isLoading, username }: UserActionsProps) {
   const [accountContextMenuIsVisible, setAccountContextMenuIsVisible] =
     React.useState(false);
 
@@ -35,9 +36,10 @@ export function UserActions({ onLogout, user, isLoading }: UserActionsProps) {
 
       {accountContextMenuIsVisible && (
         <AccountSettingsContextMenu
-          isLoggedIn={!!user}
+          isLoggedIn={!!user || !!username}
           onLogout={handleLogout}
           onClose={closeAccountMenu}
+          username={username}
         />
       )}
     </div>
