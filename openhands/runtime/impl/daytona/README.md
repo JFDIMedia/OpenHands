@@ -62,7 +62,8 @@ docker run -it --rm --pull=always \
     -e RUNTIME=daytona \
     -e DAYTONA_API_KEY=${DAYTONA_API_KEY} \
     -v ~/.openhands-state:/.openhands-state \
-    -p 3000:3000 \
+    -p ${PORT:-3000}:${PORT:-3000} \
+    -e PORT=${PORT:-3000} \
     --name openhands-app \
     docker.all-hands.dev/all-hands-ai/openhands:${OPENHANDS_VERSION}
 ```
